@@ -8,16 +8,6 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.microsoft.windowsazure.mobileservices.*;
-import com.microsoft.windowsazure.mobileservices.http.OkHttpClientFactory;
-import com.microsoft.windowsazure.mobileservices.http.ServiceFilterResponse;
-import com.microsoft.windowsazure.mobileservices.table.MobileServiceTable;
-import com.microsoft.windowsazure.mobileservices.table.TableOperationCallback;
-import com.squareup.okhttp.OkHttpClient;
-
-import java.net.MalformedURLException;
-import java.util.concurrent.TimeUnit;
-
 
 public class LoginActivity extends AppCompatActivity {
     EditText username;
@@ -42,7 +32,8 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void loginClick(View v){
-        Connect con = new Connect();
+
+        fitnessappen.fitfit.Connect con = new fitnessappen.fitfit.Connect();
         if(con.checkConnection(username.getText().toString(), password.getText().toString())){
             Intent accountIntent = new Intent(this, YourAccountActivity.class);
             startActivity(accountIntent);
