@@ -1,67 +1,81 @@
 package fitnessappen.fitfit;
 
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+
 public class CreateNewAccountActivity extends AppCompatActivity {
-    EditText Firstname;
-    EditText Lastname;
-    EditText Email;
-    EditText Username;
-    EditText Password;
-    EditText PasswordConfirm;
+    private EditText Email;
+    private EditText Password;
+    private EditText PasswordConfirm;
+
+    // [START declare_auth]
+    private FirebaseAuth mAuth;
+    // [END declare_auth]
+
+    // [START declare_auth_listener]
+    private FirebaseAuth.AuthStateListener mAuthListener;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_new_account);
 
-        Firstname = (EditText)findViewById(R.id.firstnameEdit);
-        Lastname = (EditText)findViewById(R.id.lastnameEdit);
+        mAuth = FirebaseAuth.getInstance();
+
         Email = (EditText)findViewById(R.id.emailEdit);
-        Username = (EditText)findViewById(R.id.newUsernameEdit);
         Password = (EditText)findViewById(R.id.newPasswordEdit);
         PasswordConfirm = (EditText)findViewById(R.id.newPasswordConfirmEdit);
 
     }
 
     public void createNewAccountClick(View v){
-        String firstname = Firstname.getText().toString();
-        String lastname = Lastname.getText().toString();
         String email = Email.getText().toString();
-        String username = Username.getText().toString();
         String password = Password.getText().toString();
         String pwconfirm = PasswordConfirm.getText().toString();
 
 
-        CheckRequired check = new CheckRequired(firstname, lastname, email, username, password, pwconfirm);
+        CheckRequired check = new CheckRequired(email, password, pwconfirm);
         switch (check.recquired()){
-            case "firstname": Toast.makeText(this, "Firstname is not valid", Toast.LENGTH_SHORT).show(); break;
-            case "lastname": Toast.makeText(this, "Lastname is not valid", Toast.LENGTH_SHORT).show();break;
             case "email": Toast.makeText(this, "Email is not valid", Toast.LENGTH_SHORT).show();break;
-            case "username": Toast.makeText(this, "Username is not valid", Toast.LENGTH_SHORT).show();break;
             case "password": Toast.makeText(this, "Password minimum 6 characters", Toast.LENGTH_SHORT).show();break;
             case "pwconfirm": Toast.makeText(this, "Password does not match", Toast.LENGTH_SHORT).show();break;
             default:
                 if(check.checkRequiredFields() && check.checkPwConfirmed()){
-                    User user = new User(firstname, lastname, email, username, password);
-                    Toast.makeText(this, "Account created ish", Toast.LENGTH_SHORT).show();
-                    Intent mainIntent = new Intent(CreateNewAccountActivity.this, LoginActivity.class);
-                    mainIntent.putExtra("Username", username);
-                    mainIntent.putExtra("Password", password);
-                    CreateNewAccountActivity.this.startActivity(mainIntent);
-                    CreateNewAccountActivity.this.finish();
-                    //TODO: Add to database this user.
-                }else{
+
+                    mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            Log.d("LOL", "createUserWithEmail:onComplete:" + task.isSuccessful());
+                            if(task.isSuccessful()){
+                                Intent mainIntent = new Intent(CreateNewAccountActivity.this, LoginActivity.class);
+                                mainIntent.putExtra("Email", Email.getText().toString());
+                                mainIntent.putExtra("Password", Password.getText().toString());
+
+                                Toast.makeText(CreateNewAccountActivity.this, "Account created, login!", Toast.LENGTH_SHORT).show();
+
+                                CreateNewAccountActivity.this.startActivity(mainIntent);
+                                CreateNewAccountActivity.this.finish();
+                            }else {
+                                Toast.makeText(CreateNewAccountActivity.this, "Failed to create user.", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });//Finish created user
+                } else{
                     Toast.makeText(this, "Account not created", Toast.LENGTH_SHORT).show();
                 }
-
         }
-
-
     }
 }

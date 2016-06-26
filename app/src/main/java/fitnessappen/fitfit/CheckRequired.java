@@ -5,24 +5,18 @@ package fitnessappen.fitfit;
  */
 public class CheckRequired {
 
-    private String Username;
     private String Password;
     private String Email;
-    private String FirstName;
-    private String LastName;
     private String PasswordConfirm;
 
-    public CheckRequired(String a, String b, String c, String d, String e, String f){
-        this.FirstName = a;
-        this.LastName = b;
+    public CheckRequired(String c, String e, String f){
         this.Email = c;
-        this.Username = d;
         this.Password = e;
         this.PasswordConfirm = f;
     }
 
     public boolean checkRequiredFields(){
-        if(Username != "" && Password != "" && Email != "" && Username != "" && Password != "" && PasswordConfirm != ""){
+        if(Email != "" && Password != "" && PasswordConfirm != ""){
             return true;
         }else{
             return false;
@@ -34,14 +28,8 @@ public class CheckRequired {
     }
 
     public String recquired(){
-        if(FirstName.equals("")){
-            return "firstname";
-        }else if(LastName.equals("")){
-            return "lastname";
-        }else if(!android.util.Patterns.EMAIL_ADDRESS.matcher(Email).matches()){
+        if(!android.util.Patterns.EMAIL_ADDRESS.matcher(Email).matches()){
             return "email";
-        }else if(Username.equals("")){
-            return "username";
         }else if(Password.length() < 6){
             return "password";
         }else if(!Password.equals(PasswordConfirm)){

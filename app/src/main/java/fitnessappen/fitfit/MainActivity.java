@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 
+
 public class MainActivity extends AppCompatActivity {
 
     private final int SPLASH_DISPLAY_LENGTH = 3000;
@@ -16,6 +17,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(icicle);
         setTheme(R.style.splashScreenTheme);
 
+
+        loadLoginView();
+
+    }
+    private void loadLoginView(){
         /* New Handler to start the Menu-Activity
          * and close this Splash-Screen after some seconds.*/
         new Handler().postDelayed(new Runnable(){
@@ -23,6 +29,8 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 /* Create an Intent that will start the Menu-Activity. */
                 Intent mainIntent = new Intent(MainActivity.this, LoginActivity.class);
+                mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 MainActivity.this.startActivity(mainIntent);
                 MainActivity.this.finish();
             }

@@ -5,17 +5,22 @@ package fitnessappen.fitfit;
  */
 public class User
 {
-    private String Username;
     private String Password;
     private String Email;
     private String FirstName;
     private String LastName;
 
-    public User(String a, String b, String c, String d, String e){
+    public User(String a, String b, String c, String e){
         this.FirstName = a;
         this.LastName = b;
         this.Email = c;
-        this.Username = d;
         this.Password = e;
+    }
+
+    public String getFirstName(){
+        return FirstName;
+    }
+    public String getLastName(){
+        return LastName;
     }
 }
